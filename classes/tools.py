@@ -1,3 +1,6 @@
+# from lxml import etree as ET
+# from lxml.builder import E
+# import simplejson
 import re
 import datetime
 
@@ -26,3 +29,11 @@ def to_date(date_string):
             month=int(match.group(2)),
             day=int(match.group(3)),
         ).date()
+
+
+def data_check(data):
+    """
+    Utility to check the incomming data for JSON or XML
+    """
+    if type(data) is dict:
+        print(data)
