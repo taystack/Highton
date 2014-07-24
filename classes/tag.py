@@ -1,6 +1,9 @@
 
 
 class Tag:
+
+    TYPE = 'tag'
+
     def __init__(
         self,
         highrise_id,

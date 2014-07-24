@@ -27,6 +27,9 @@ class Person(Contact):
         subject_datas,
         tags
     """
+
+    TYPE = 'person'
+
     def save_data(self, person):
         self.highrise_id = person['id'].pyval
         self.created_at = to_datetime(person['created-at'].pyval)

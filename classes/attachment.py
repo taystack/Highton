@@ -7,6 +7,9 @@ class Attachment(object):
         name
         size
     """
+
+    TYPE = 'attachment'
+
     def save_data(self, attachment):
         self.highrise_id = attachment['id'].pyval
 

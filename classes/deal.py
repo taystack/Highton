@@ -16,7 +16,7 @@ class Deal(object):
         currency
         duration
         group_id
-        id
+        highton_id
         name
         owner_id
         party_id
@@ -31,6 +31,23 @@ class Deal(object):
         party
         parties
     """
+
+    TYPE = 'deal'
+
+    OPTIONAL_FIELDS = [
+        'name',
+        'party-id ',
+        'visible-to',
+        'group-id ',
+        'owner-id ',
+        'responsible-party-id ',
+        'category-id ',
+        'background',
+        'currency',
+        'price ',
+        'price-type',
+        'duration '
+    ]
 
     def __init__(self):
         self.parties = []

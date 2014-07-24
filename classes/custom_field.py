@@ -1,6 +1,9 @@
 
 
 class SubjectData:
+
+    TYPE = 'subject_data'
+
     def __init__(
         self,
         highrise_id,

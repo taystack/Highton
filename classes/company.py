@@ -26,6 +26,13 @@ class Company(Contact):
         subject_datas,
         tags
     """
+
+    TYPE = 'company'
+
+    REQUIRED_FIELDS = [
+
+    ]
+
     def save_data(self, company):
         self.highrise_id = company['id'].pyval
         self.created_at = to_datetime(company['created-at'].pyval)

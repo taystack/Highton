@@ -18,7 +18,7 @@ from classes.email import Email
 from classes.deletions import Deletion
 from classes.custom_field import SubjectData
 from classes.user import User
-from classes.tools import to_datetime
+from classes.tools import to_datetime, prepare_highrise_xml, prepare_obj
 
 
 class Highton(object):
@@ -41,7 +41,7 @@ class Highton(object):
             params=params,
         )
 
-        if 'text/html' in request.headers['content-type']:
+        if 'text/html' in request.headers['Content-Type']:
             raise XMLRequestException(url)
 
         return request
@@ -154,16 +154,21 @@ class Highton(object):
             data_list.append(temp)
         return data_list
 
-    def _post_request(self, endpoint, highrise_class, data=None, params={}):
+    def _post_request(self, endpoint, highrise_class, data, params={}):
+        if type(data) is dict:
+            data = prepare_highrise_xml(highrise_class.TYPE, data)
+
         url = 'https://{}.highrisehq.com/{}.xml'.format(
-            self.user, endpoint, params)
+            self.user, endpoint)
+        params['reload'] = 'true'
+
         try:
             request = requests.post(
                 url,
                 auth=HTTPBasicAuth(self.api_key, self.api_key_password),
                 headers={
                     'User-Agent': 'Highton-API: (bykof@me.com)',
-                    'content-type': 'application/xml'
+                    'Content-Type': 'application/xml'
                 },
                 params=params,
                 data=data
@@ -173,7 +178,7 @@ class Highton(object):
             model = highrise_class()
             model.save_data(data)
 
-            if 'text/html' in request.headers['content-type']:
+            if 'text/html' in request.headers['Content-Type']:
                 raise XMLRequestException(url)
 
         except TypeError:
@@ -183,24 +188,38 @@ class Highton(object):
                     'Posting data to Highrise failed'
                 )
 
-        return {'response': request, 'model': model}
+        return model
 
     def _put_request(self, endpoint, highrise_class, data=None, params={}):
+
+        if type(data) is highrise_class:
+            # _id = data.highrise_id
+            # del data.highrise_id
+            # data.id = _id
+            obj_data = prepare_obj(data)
+            import ipdb; ipdb.set_trace()
+            data = prepare_highrise_xml(highrise_class.TYPE, obj_data)
+
+        elif type(data) is dict:
+            data = prepare_highrise_xml(highrise_class.TYPE, data)
+
+        url = 'https://{}.highrisehq.com/{}.xml'.format(
+            self.user, endpoint)
+        params['reload'] = 'true'
+
         try:
-            url = 'https://{}.highrisehq.com/{}.xml'.format(
-                self.user, endpoint, params)
             request = requests.put(
                 url,
                 auth=HTTPBasicAuth(self.api_key, self.api_key_password),
                 headers={
                     'User-Agent': 'Highton-API: (bykof@me.com)',
-                    'content-type': 'application/xml'
+                    'Content-Type': 'application/xml'
                 },
                 params=params,
                 data=data
             )
 
-            if 'text/html' in request.headers['content-type']:
+            if 'text/html' in request.headers['Content-Type']:
                 raise XMLRequestException(url)
 
         except TypeError:
@@ -208,19 +227,16 @@ class Highton(object):
                 raise HighriseRequestException(
                     endpoint, 'Updating to Highrise failed'
                 )
+        data = objectify.fromstring(request.content)
+        model = highrise_class()
+        model.save_data(data)
 
-        if params['reload'] and request.status_code is 200:
-            data = objectify.fromstring(request.content)
-            model = highrise_class()
-            model.save_data(data)
-            return {'response': request, 'model': model}
-
-        else:
-            return request
+        return model
 
     def _delete_request(self, endpoint, params={}):
         url = 'https://{}.highrisehq.com/{}.xml'.format(
             self.user, endpoint, params)
+
         request = requests.delete(
             url,
             auth=HTTPBasicAuth(self.api_key, self.api_key_password),
@@ -230,7 +246,7 @@ class Highton(object):
             params=params,
         )
 
-        if 'text/html' in request.headers['content-type']:
+        if 'text/html' in request.headers['Content-Type']:
             raise XMLRequestException(url)
 
         return request
@@ -631,34 +647,39 @@ class Highton(object):
 
     # def put_comment(self, highrise_id, data, params={}):
     #     return self._put_request(
-    #         'comments/{}'.format(highrise_id), data, params)
+    #         'comments/{}'.format(highrise_id), Comment, data, params)
 
     def put_company(self, highrise_id, data, params={}):
         return self._put_request(
-            'companies/{}'.format(highrise_id), data, params)
+            'companies/{}'.format(highrise_id), Company, data, params)
 
     def put_custom_field(self, highrise_id, data, params={}):
         return self._put_request(
-            'subject_field/{}'.format(highrise_id), data, params)
+            'subject_field/{}'.format(highrise_id), SubjectData, data, params)
 
     def put_deal(self, highrise_id, data, params={}):
-        return self._put_request('deals/{}'.format(highrise_id), data, params)
+        return self._put_request(
+            'deals/{}'.format(highrise_id), Deal, data, params)
 
     def put_email(self, highrise_id, data, params={}):
-        return self._put_request('emails/{}'.format(highrise_id), data, params)
+        return self._put_request(
+            'emails/{}'.format(highrise_id), Email, data, params)
 
     # def put_group(self, highrise_id, data, params={}):
     #     return self._put_request(
     #         'groups/{}'.format(highrise_id), data, params)
 
     def put_note(self, highrise_id, data, params={}):
-        return self._put_request('notes/{}'.format(highrise_id), data, params)
+        return self._put_request(
+            'notes/{}'.format(highrise_id), Note, data, params)
 
     def put_person(self, highrise_id, data, params={}):
-        return self._put_request('people/{}'.format(highrise_id), data, params)
+        return self._put_request(
+            'people/{}'.format(highrise_id), Person, data, params)
 
     def put_task(self, highrise_id, data, params={}):
-        return self._put_request('tasks/{}'.format(highrise_id), data, params)
+        return self._put_request(
+            'tasks/{}'.format(highrise_id), Task, data, params)
 
     # Destroy Methosd
     def delete_case(self, highrise_id, params={}):

@@ -12,6 +12,8 @@ class User(object):
         admin
     """
 
+    TYPE = 'user'
+
     def save_data(self, user):
         self.highrise_id = user['id'].pyval
         self.created_at = to_datetime(user['created-at'].pyval)

@@ -3,6 +3,9 @@ from .tools import to_datetime
 
 
 class Email(object):
+
+    TYPE = 'email'
+
     def __init__(self):
         self.attachments = []
 

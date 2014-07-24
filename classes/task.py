@@ -17,19 +17,9 @@ class Task(object):
         author-id
         updated-at
         public
-        recording-id
-        subject-id
-        subject-type
-        category-id
-        body
-        frame
-        due-at
-        alert-at
-        created-at
-        author-id
-        updated-at
-        public
     """
+
+    TYPE = 'task'
 
     def save_data(self, task):
         self.highrise_id = task['id'].pyval

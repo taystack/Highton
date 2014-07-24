@@ -18,6 +18,11 @@ class Case(object):
         owner_id,
         parties
     """
+
+    TYPE = 'kase'
+
+    OPTIONAL_FIELDS = ['name', 'closed_at']
+
     def __init__(self):
         self.parties = []
 

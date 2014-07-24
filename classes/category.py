@@ -8,6 +8,12 @@ class Category(object):
         highrise_id,
         name,
     """
+
+    OPTIONAL_FIELDS = [
+        'name',
+        'color'
+    ]
+
     def save_data(self, category):
         self.highrise_id = category['id'].pyval
         self.name = category['name'].pyval
@@ -26,6 +32,9 @@ class TaskCategory(Category):
         created_at,
         elements_count,
     """
+
+    TYPE = 'task-category'
+
     def save_data(self, category):
         self.highrise_id = category['id'].pyval
 
@@ -53,6 +62,9 @@ class DealCategory(Category):
         created_at,
         elements_count,
     """
+
+    TYPE = 'deal-category'
+
     def save_data(self, category):
         self.highrise_id = category['id'].pyval
         self.created_at = to_datetime(category['created-at'].pyval)

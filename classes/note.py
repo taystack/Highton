@@ -19,6 +19,9 @@ class Note(object):
         created_at
         attachments
     """
+
+    TYPE = 'note'
+
     def __init__(self):
         self.attachments = []
 
