@@ -4,6 +4,12 @@ class SubjectData:
 
     TYPE = 'subject_data'
 
+    OPTIONAL_FIELDS = [
+        'value',
+        'subject_field_id',
+        'subject_field_label',
+    ]
+
     def __init__(
         self,
         highrise_id,

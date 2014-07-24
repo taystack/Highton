@@ -4,6 +4,10 @@ class Tag:
 
     TYPE = 'tag'
 
+    OPTIONAL_FIELDS = [
+        'name',
+    ]
+
     def __init__(
         self,
         highrise_id,

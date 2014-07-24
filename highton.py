@@ -154,9 +154,17 @@ class Highton(object):
             data_list.append(temp)
         return data_list
 
-    def _post_request(self, endpoint, highrise_class, data, params={}):
+    def _process_data(self, highrise_class, data):
+        if type(data) is highrise_class:
+            data = prepare_obj(data)
+
         if type(data) is dict:
             data = prepare_highrise_xml(highrise_class.TYPE, data)
+
+        return data
+
+    def _post_request(self, endpoint, highrise_class, data, params={}):
+        data = self._process_data(highrise_class, data)
 
         url = 'https://{}.highrisehq.com/{}.xml'.format(
             self.user, endpoint)
@@ -191,14 +199,7 @@ class Highton(object):
         return model
 
     def _put_request(self, endpoint, highrise_class, data=None, params={}):
-
-        if type(data) is highrise_class:
-            obj_data = prepare_obj(data)
-            import ipdb; ipdb.set_trace()
-            data = prepare_highrise_xml(highrise_class.TYPE, obj_data)
-
-        elif type(data) is dict:
-            data = prepare_highrise_xml(highrise_class.TYPE, data)
+        data = self._process_data(highrise_class, data)
 
         url = 'https://{}.highrisehq.com/{}.xml'.format(
             self.user, endpoint)

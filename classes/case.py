@@ -21,7 +21,10 @@ class Case(object):
 
     TYPE = 'kase'
 
-    OPTIONAL_FIELDS = ['name', 'closed_at']
+    OPTIONAL_FIELDS = [
+        'name',
+        'closed_at'
+    ]
 
     def __init__(self):
         self.parties = []

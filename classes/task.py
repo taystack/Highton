@@ -21,6 +21,22 @@ class Task(object):
 
     TYPE = 'task'
 
+    OPTIONAL_FIELDS = [
+        'recording-id',
+        'subject-id',
+        'subject-type',
+        'subject-name',
+        'category-id',
+        'body',
+        'frame',
+        'due-at',
+        'alert-at',
+        'created-at',
+        'author-id',
+        'updated-at',
+        'public',
+    ]
+
     def save_data(self, task):
         self.highrise_id = task['id'].pyval
         self.created_at = to_datetime(task['created-at'].pyval)

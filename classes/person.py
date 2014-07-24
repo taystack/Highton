@@ -30,6 +30,22 @@ class Person(Contact):
 
     TYPE = 'person'
 
+    OPTIONAL_FIELDS = [
+        'first-name',
+        'last-name',
+        'title',
+        'background',
+        'linkedin-url',
+        'avatar-url',
+        'company-id',
+        'company-name',
+        'created-at',
+        'updated-at',
+        'visible-to',
+        'owner-id',
+        'group-id',
+    ]
+
     def save_data(self, person):
         self.highrise_id = person['id'].pyval
         self.created_at = to_datetime(person['created-at'].pyval)

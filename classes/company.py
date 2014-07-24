@@ -29,8 +29,15 @@ class Company(Contact):
 
     TYPE = 'company'
 
-    REQUIRED_FIELDS = [
-
+    OPTIONAL_FIELDS = [
+        'name',
+        'background',
+        'created-at',
+        'updated-at',
+        'visible-to',
+        'owner-id',
+        'group-id',
+        'author-id',
     ]
 
     def save_data(self, company):

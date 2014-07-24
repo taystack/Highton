@@ -22,6 +22,19 @@ class Note(object):
 
     TYPE = 'note'
 
+    OPTIONAL_FIELDS = [
+        'body',
+        'author-id',
+        'subject-id',
+        'subject-type',
+        'subject-name',
+        'collection-id',
+        'collection-type',
+        'visible-to',
+        'owner-id',
+        'group-id',
+    ]
+
     def __init__(self):
         self.attachments = []
 
