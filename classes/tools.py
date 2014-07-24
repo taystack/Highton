@@ -35,7 +35,12 @@ def prepare_obj(highrise_model):
     data['id'] = highrise_model.highrise_id
     for attr in type(highrise_model).OPTIONAL_FIELDS:
         if hasattr(highrise_model, attr.replace('-', '_')):
-            data[attr] = highrise_model.attr.replace('-', '_')
+            data[attr] = getattr(highrise_model, attr.replace('-', '_'))
+
+        elif hasattr(highrise_model, attr):
+            data[attr] = getattr(highrise_model, attr)
+
+    return data
 
 
 def prepare_highrise_xml(obj_type, obj):

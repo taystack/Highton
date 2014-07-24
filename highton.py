@@ -193,9 +193,6 @@ class Highton(object):
     def _put_request(self, endpoint, highrise_class, data=None, params={}):
 
         if type(data) is highrise_class:
-            # _id = data.highrise_id
-            # del data.highrise_id
-            # data.id = _id
             obj_data = prepare_obj(data)
             import ipdb; ipdb.set_trace()
             data = prepare_highrise_xml(highrise_class.TYPE, obj_data)
