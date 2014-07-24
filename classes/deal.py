@@ -35,18 +35,22 @@ class Deal(object):
     TYPE = 'deal'
 
     OPTIONAL_FIELDS = [
-        'name',
-        'party-id ',
-        'visible-to',
-        'group-id ',
-        'owner-id ',
-        'responsible-party-id ',
-        'category-id ',
+        'account-id',
+        'author-id',
         'background',
+        'category-id',
         'currency',
-        'price ',
+        'duration',
+        'group-id',
+        'name',
+        'owner-id',
+        'party-id',
+        'price',
         'price-type',
-        'duration '
+        'responsible-party-id',
+        'status',
+        'status-changed-on',
+        'visible-to',
     ]
 
     def __init__(self):
@@ -58,24 +62,7 @@ class Deal(object):
         self.updated_at = to_datetime(deal['updated-at'].pyval)
         self.status_changed_on = to_date(deal['status-changed-on'].pyval)
 
-        for attr in [
-            'account-id',
-            'author-id',
-            'background',
-            'category-id',
-            'currency',
-            'duration',
-            'group-id',
-            'name',
-            'owner-id',
-            'party-id',
-            'price',
-            'price-type',
-            'responsible-party-id',
-            'status',
-            'status-changed-on',
-            'visible-to',
-        ]:
+        for attr in self.OPTIONAL_FIELDS:
             setattr(self, attr.replace('-', '_'), deal[attr].pyval)
 
         if hasattr(deal, 'category'):

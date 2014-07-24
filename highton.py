@@ -18,6 +18,7 @@ from classes.email import Email
 from classes.deletions import Deletion
 from classes.custom_field import SubjectData
 from classes.user import User
+from classes.group import Group
 from classes.tools import to_datetime, prepare_highrise_xml, prepare_obj
 
 
@@ -163,12 +164,17 @@ class Highton(object):
 
         return data
 
-    def _post_request(self, endpoint, highrise_class, data, params={}):
+    def _post_request(self,
+                      endpoint,
+                      highrise_class,
+                      data,
+                      params={'reload': 'true'}):
+
         data = self._process_data(highrise_class, data)
 
         url = 'https://{}.highrisehq.com/{}.xml'.format(
             self.user, endpoint)
-        params['reload'] = 'true'
+        params['reload'] = True
 
         try:
             request = requests.post(
@@ -181,6 +187,8 @@ class Highton(object):
                 params=params,
                 data=data
             )
+
+            import ipdb; ipdb.set_trace()
 
             data = objectify.fromstring(request.content)
             model = highrise_class()
@@ -398,6 +406,22 @@ class Highton(object):
         return self._get_object_data(self._get_paged_data(
             'deals', params={'status': status}), Deal)
 
+    def get_group(self, subject_id):
+        """
+        Gives you a chosen group as an object.
+        :param subject_id: the highrise_id of the group
+        :return: group object
+        """
+        return self._get_object_data(self._get_single_data('groups/{}'.format(
+            subject_id)), Group)[0]
+
+    def get_groups(self):
+        """
+        Gives you all Groups.
+        :return: returns you all the Groups you have
+        """
+        return self._get_object_data(self._get_paged_data('groups'), Group)
+
     def get_task(self, subject_id):
         """
         Gives you a chosen task as an object.
@@ -508,10 +532,7 @@ class Highton(object):
     # Create Methods:
     def post_case(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            cases.md#create-case
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
@@ -526,10 +547,7 @@ class Highton(object):
 
     def post_company(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            companies.md#create-company
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
@@ -537,10 +555,7 @@ class Highton(object):
 
     def post_custom_field(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            custom_fields.md#create-custom-field
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
@@ -548,10 +563,7 @@ class Highton(object):
 
     def post_deal(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            deals.md#create-deal
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
@@ -559,46 +571,32 @@ class Highton(object):
 
     def post_email(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            emails.md#create-email
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
         return self._post_request('emails', Email, data, params)
 
+    def post_group(self, data, params={}):
+        """
+        :param data: Shallow Dict or full XML.
+        :param params: see:
+            https://pypi.python.org/pypi/requests/2.3.0
+        """
+        return self._post_request('groups', Group, data, params)
+
     def post_subject_email(self, subject_type, subject_id, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            emails.md#create-email
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
         return self._post_request('{}/{}/emails'.format(
             subject_type, subject_id), Email, data, params)
 
-    # TODO: Add Group class.
-    # def post_group(self, data, params={}):
-    #     """
-    #     Post a given (xml string) to Highrise.
-    #     :param data: Highrise HQ data format see:
-    #         https://github.com/basecamp/highrise-api/blob/master/sections/
-    #         groups.md#create-group
-    #     :param params: see:
-    #         https://pypi.python.org/pypi/requests/2.3.0
-    #     """
-    #     return self._get_object_data(
-    #         self._post_request('groups', data, params), Group)[0]
-
     def post_note(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            notes.md#create-note
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
@@ -606,10 +604,7 @@ class Highton(object):
 
     def post_subject_note(self, subject_type, subject_id, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            notes.md#create-note
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
@@ -618,10 +613,7 @@ class Highton(object):
 
     def post_person(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            people.md#create-person
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """
@@ -629,10 +621,7 @@ class Highton(object):
 
     def post_task(self, data, params={}):
         """
-        Post a given (xml string) to Highrise.
-        :param data: Highrise HQ data format see:
-            https://github.com/basecamp/highrise-api/blob/master/sections/
-            tasks.md#create-task
+        :param data: Shallow Dict or full XML.
         :param params: see:
             https://pypi.python.org/pypi/requests/2.3.0
         """

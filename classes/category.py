@@ -9,6 +9,8 @@ class Category(object):
         name,
     """
 
+    TYPE = 'category'
+
     OPTIONAL_FIELDS = [
         'name',
         'color'
